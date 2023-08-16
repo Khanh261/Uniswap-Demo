@@ -29,8 +29,9 @@ const style = {
 
 const Header = () => {
   const [selectedNav, setSelectedNav] = useState("swap"); //highlighted nav
-  const { connectWallet, currentAccount, balance } =
+  const { connectWallet, currentAccount, balance, disconnectWallet } =
     useContext(TransactionContext);
+
   const [showBalance, setShowBalance] = useState(0);
 
   const toggleBalance = () => {
@@ -115,9 +116,22 @@ const Header = () => {
           </div>{" "}
         </div>{" "}
         {currentAccount ? (
-          <div className={`${style.button} ${style.buttonPadding}`}>
-            <div className={style.buttonTextContainer}> {currentAccount} </div>{" "}
-          </div>
+          <>
+            <div className={`${style.button} ${style.buttonPadding}`}>
+              <div className={style.buttonTextContainer}>
+                {" "}
+                {currentAccount}{" "}
+              </div>{" "}
+            </div>{" "}
+            <div
+              onClick={() => disconnectWallet()}
+              className={`${style.button} ${style.buttonPadding}`}
+            >
+              <div className={`${style.buttonAccent} ${style.buttonPadding}`}>
+                Disconnect Wallet{" "}
+              </div>{" "}
+            </div>{" "}
+          </>
         ) : (
           <div
             onClick={() => connectWallet()}

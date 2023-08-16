@@ -65,12 +65,19 @@ export const TransactionContextProvider = ({ children }) => {
     }
   };
 
+  const disconnectWallet = () => {
+    setCurrentAccount(null);
+  };
+
+  //make method disconnect wallet
+
   return (
     <TransactionContext.Provider
       value={{
         currentAccount,
         connectWallet,
         balance,
+        disconnectWallet, // make sure to include this line
       }}
     >
       {children}{" "}
