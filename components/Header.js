@@ -31,7 +31,7 @@ const Header = () => {
   const [selectedNav, setSelectedNav] = useState("swap"); //highlighted nav
   const { connectWallet, currentAccount, balance, disconnectWallet } =
     useContext(TransactionContext);
-
+  //sd
   const [showBalance, setShowBalance] = useState(0);
 
   const toggleBalance = () => {
