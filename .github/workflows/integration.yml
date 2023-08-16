@@ -20,7 +20,9 @@ jobs:
         uses: actions/setup-node@v2.5.1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Set environment variable
+        run: echo "YARN_ENABLE_IMMUTABLE_INSTALLS=false" >> $GITHUB_ENV
       - name: Install dependencies
-        run: npm ci
+        run: yarn install
       - name: Build project
         run: npm run build
