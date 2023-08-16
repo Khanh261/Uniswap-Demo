@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build and Deploy
 on:
   push:
     branches:
@@ -7,6 +7,12 @@ on:
     branches:
       - main
 
+env:
+  NODE_VERSION: "18.x" # set this to the node version to use
+  PROJECT_NAME: "your-project-name" # set this to your project name
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }} # set this to your Cloudflare account ID
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }} # set this to your Cloudflare API token
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,15 +20,27 @@ jobs:
       matrix:
         node-version: [18.x]
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2.4.1
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - uses: actions/checkout@v2.4.1
+
+      - name: Set up Node.js
         uses: actions/setup-node@v2.5.1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
       - name: Set environment variable
         run: echo "YARN_ENABLE_IMMUTABLE_INSTALLS=false" >> $GITHUB_ENV
+
       - name: Install dependencies
         run: yarn install
+
       - name: Build project
         run: npm run build
+
+      - name: Install Wrangler CLI
+        run: npm install -g @cloudflare/wrangler
+
+      - name: Publish to Cloudflare Pages
+        run: |
+          echo "CLOUDFLARE_ACCOUNT_ID=${{ env.CLOUDFLARE_ACCOUNT_ID }} CLOUDFLARE_API_TOKEN=${{ env.CLOUDFLARE_API_TOKEN }}"
+          wrangler pages publish build --project-name=${{ env.PROJECT_NAME }} --branch=${GITHUB_REF##*/} --commit-hash=${{ env.GITHUB_SHA }}
