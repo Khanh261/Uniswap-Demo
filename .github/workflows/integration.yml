@@ -48,5 +48,7 @@ jobs:
           echo "CLOUDFLARE_ACCOUNT_ID=${{ env.CLOUDFLARE_ACCOUNT_ID }} CLOUDFLARE_API_TOKEN=${{ env.CLOUDFLARE_API_TOKEN }}"
           wrangler pages publish build --project-name=${{ env.PROJECT_NAME }} --branch=${GITHUB_REF##*/} --commit-hash=${{ env.GITHUB_SHA }}
 
-      - name: Display Debug Log
-        run: cat /home/runner/.npm/_logs/2023-08-17T01_53_16_970Z-debug.log
+      - name: Remove yarn.lock and install dependencies
+        run: |
+          rm yarn.lock
+          yarn install || npm ci
